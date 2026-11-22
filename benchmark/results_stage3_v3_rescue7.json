@@ -1,0 +1,255 @@
+{
+  "mode": "smart",
+  "passed": 4,
+  "total": 7,
+  "score_pct": 57.14285714285714,
+  "results": [
+    {
+      "id": "py_11_longest_unique_sub",
+      "passed": true,
+      "attempts": 4,
+      "time_s": 513.3,
+      "tokens": 744,
+      "tps": 1.84,
+      "exemplar": "ex_sliding_window_for",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 182,
+          "error": "AssertionError: assert longest_unique_substring('abcabcbb') == 3 | actual=0, expected=3 | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 177,
+          "error": "AssertionError: assert longest_unique_substring('abcabcbb') == 3 | actual=0, expected=3 | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 204,
+          "error": "AssertionError: assert longest_unique_substring('abcabcbb') == 3 | actual=5, expected=3 | locals={}"
+        },
+        {
+          "attempt": 4,
+          "passed": true,
+          "tokens": 181,
+          "error": ""
+        }
+      ],
+      "final_code": "def longest_unique_substring(s: str) -> int:\n    if not s:\n        return 0\n    \n    left = cur_len = best = 0\n    seen = set()\n    \n    for right, char in enumerate(s):\n        while char in seen and left < right:\n            seen.remove(s[left])\n            left += 1\n        \n        seen.add(char)\n        cur_len = right - left + 1\n        if cur_len > best:\n            best = cur_len\n    \n    return best",
+      "error": ""
+    },
+    {
+      "id": "py_15_bfs_grid",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 235.4,
+      "tokens": 380,
+      "tps": 1.8,
+      "exemplar": "ex_graph_bfs_visited",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 380,
+          "error": ""
+        }
+      ],
+      "final_code": "from collections import deque\n\ndef shortest_path(grid: list[list[int]]) -> int:\n    if not grid or not grid[0]: return -1  # empty grid\n    rows, cols = len(grid), len(grid[0])\n    start = (0, 0)\n    goal = (rows - 1, cols - 1)\n\n    if grid[start[0]][start[1]] == 1 or grid[goal[0]][goal[1]] == 1: return -1\n    if start == goal and grid[start[0]][start[1]] == 0: return 0\n\n    q = deque([(start, 0)])\n    seen = {start}\n\n    while q:\n        (r, c), dist = q.popleft()\n        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < rows and 0 <= nc < cols:\n                if grid[nr][nc] == 0 and (nr, nc) not in seen:\n                    if (nr, nc) == goal: return dist + 1\n                    seen.add((nr, nc))\n                    q.append(((nr, nc), dist + 1))\n\n    return -1",
+      "error": ""
+    },
+    {
+      "id": "py_16_lis_length",
+      "passed": true,
+      "attempts": 3,
+      "time_s": 522.1,
+      "tokens": 811,
+      "tps": 1.7,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 344,
+          "error": "AssertionError: assert lis_length([0,1,0,3,2,3]) == 4 | actual=3, expected=4 | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 240,
+          "error": "IndexError: list assignment index out of range"
+        },
+        {
+          "attempt": 3,
+          "passed": true,
+          "tokens": 227,
+          "error": ""
+        }
+      ],
+      "final_code": "from bisect import bisect_left\n\ndef lis_length(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    \n    tails = [nums[0]]\n    \n    for x in nums[1:]:\n        # Find position where we can extend or replace\n        pos = bisect_left(tails, x)\n        \n        if pos == len(tails):\n            tails.append(x)\n        else:\n            tails[pos] = min(tails[pos], x)  # redundant but explicit\n    \n    return len(tails)",
+      "error": ""
+    },
+    {
+      "id": "py_18_csv_parse_line",
+      "passed": false,
+      "attempts": 5,
+      "time_s": 1670.1,
+      "tokens": 1726,
+      "tps": 1.15,
+      "exemplar": "ex_char_scanner_state",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 286,
+          "error": "AssertionError: assert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2'] | actual=['he said hi', '2'], expected=['he said \"hi\"', '2'] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 282,
+          "error": "AssertionError: assert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2'] | actual=['he said hi', '2'], expected=['he said \"hi\"', '2'] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 300,
+          "error": "AssertionError: assert parse_csv_line('a,\"b,c\",d') == ['a', 'b,c', 'd'] | actual=['a', '\"b', 'c\"', 'd'], expected=['a', 'b,c', 'd'] | locals={}"
+        },
+        {
+          "attempt": 4,
+          "passed": false,
+          "tokens": 311,
+          "error": "UnboundLocalError: cannot access local variable 'in_quotes' where it is not associated with a value"
+        },
+        {
+          "attempt": 5,
+          "passed": false,
+          "tokens": 547,
+          "error": "AssertionError: assert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2'] | actual=['', '2'], expected=['he said \"hi\"', '2'] | locals={'tests': ['a,\"b,c\",d', '\"a\",\"b\"', '\"\"', '\"a,b\"c,d', '', ',', '   ', '\"x,y\"z'], 'test': '\"x,y\"z'}"
+        }
+      ],
+      "final_code": "from typing import List, Final\nimport sys\n\ndef parse_csv_line(line: str) -> List[str]:\n    \"\"\"Parse CSV line with standard double-quote quoting rules (no csv module).\"\"\"\n    \n    # Handle empty input immediately\n    if not line or line.strip() == \"\":\n        return []\n    \n    tokens = []\n    \n    in_quotes: bool = False\n    current_buffer: str = \"\"\n    \n    i = 0\n    n = len(line)\n    \n    while i < n:\n        ch = line[i]\n        \n        # Start of a quoted field (non-empty quote char)\n        if not in_quotes and ch == '\"':\n            in_quotes = True\n            current_buffer = \"\"\n            i += 1\n            continue\n            \n        # End of quoted field or continuation outside quotes\n        elif in_quotes:\n            if ch == '\"':\n                # Toggle quote state for next iteration (not yet updated)\n                in_quotes = not in_quotes\n            else:\n                current_buffer += ch\n            i += 1\n            continue\n            \n        # Outside quotes: normal CSV logic\n        else:\n            if ch == ',':\n                tokens.append(current_buffer or \"\")\n                current_buffer = \"\"\n                i += 1\n                continue\n                \n            elif ch.isspace():\n                # Skip whitespace outside quotes (standard CSV behavior)\n                i += 1\n                continue\n            \n            else:\n                # Normal character into buffer\n                current_buffer += ch\n                i += 1\n    \n    # Append final token if non-empty after loop ends\n    tokens.append(current_buffer or \"\")\n    \n    return tokens\n\n# --- Validation examples (for self-check, not part of implementation) ---\nif __name__ == \"__main__\":\n    tests = [\n        \"a,\\\"b,c\\\",d\",\n        '\"a\",\"b\"',\n        '\"\"',\n        '\"a,b\"c,d',  # literal comma inside quotes if properly quoted in real CSV; handled as-is here.\n        '',\n        ',',\n        '   ',\n        '\"x,y\"z',\n    ]\n\n    for test in tests:\n        print(repr(test), \"->\", parse_csv_line(test))",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp0w3uu24x.py\", line 91, in <module>\n    assert __lhs == __rhs, ('assert parse_csv_line(\\'\"he said \"\"hi\"\"\",2\\') == [\\'he said \"hi\"\\', \\'2\\']' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2'] | actual=['', '2'], expected=['he said \"hi\"', '2'] | locals={'tests': ['a,\"b,c\",d', '\"a\",\"b\"', '\"\"', '\"a,b\"c,d', '', ',', '   ', '\"x,y\"z'], 'test': '\"x,y\"z'}"
+    },
+    {
+      "id": "py_21_spiral_matrix",
+      "passed": false,
+      "attempts": 5,
+      "time_s": 1206.9,
+      "tokens": 2013,
+      "tps": 1.45,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 355,
+          "error": "raise TimeoutError('Infinite loop (>4s): loop pointer/condition never terminates')"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 414,
+          "error": "AssertionError: assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5] | actual=[2, 3, 6, 9, 8, 4], expected=[1, 2, 3, 6, 9, 8, 7, 4, 5] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 536,
+          "error": "SyntaxError: '[' was never closed"
+        },
+        {
+          "attempt": 4,
+          "passed": false,
+          "tokens": 428,
+          "error": "SyntaxError: '[' was never closed"
+        },
+        {
+          "attempt": 5,
+          "passed": false,
+          "tokens": 280,
+          "error": "AssertionError: assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5] | actual=[1, 2, 3, 6, 9, 5, 8, 4, 7], expected=[1, 2, 3, 6, 9, 8, 7, 4, 5] | locals={}"
+        }
+      ],
+      "final_code": "from collections import deque\n\ndef spiral_order(matrix):\n    if not matrix:\n        return []\n    \n    R, C = len(matrix), len(matrix[0])\n    visited = set()\n    q = deque([(0, 0)])\n    result = []\n\n    while q:\n        r, c = q.popleft()\n        val = matrix[r][c]\n        if (r, c) in visited:\n            continue\n        visited.add((r, c))\n        result.append(val)\n\n        # right\n        nr, nc = r + 1, c\n        if 0 <= nr < R and 0 <= nc < C and (nr, nc) not in visited:\n            q.appendleft((nr, nc))\n        \n        # down\n        nr, nc = r, c + 1\n        if 0 <= nr < R and 0 <= nc < C and (nr, nc) not in visited:\n            q.appendleft((nr, nc))\n\n    return result",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpjf75ssjz.py\", line 42, in <module>\n    assert __lhs == __rhs, ('assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5]' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5] | actual=[1, 2, 3, 6, 9, 5, 8, 4, 7], expected=[1, 2, 3, 6, 9, 8, 7, 4, 5] | locals={}"
+    },
+    {
+      "id": "py_24_bipartite_check",
+      "passed": false,
+      "attempts": 5,
+      "time_s": 1414.0,
+      "tokens": 1818,
+      "tps": 1.47,
+      "exemplar": "ex_graph_bfs_visited",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 465,
+          "error": "AssertionError: assert is_bipartite(3, [(0,1),(1,2),(2,0)]) is False | actual=True, expected=False | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 313,
+          "error": "AssertionError: assert is_bipartite(3, [(0,1),(1,2),(2,0)]) is False | actual=True, expected=False | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 366,
+          "error": "AssertionError: assert is_bipartite(4, [(0,1),(1,2),(2,3),(3,0)]) is True | actual=False, expected=True | locals={}"
+        },
+        {
+          "attempt": 4,
+          "passed": false,
+          "tokens": 335,
+          "error": "AssertionError: assert is_bipartite(4, [(0,1),(1,2),(2,3),(3,0)]) is True | actual=False, expected=True | locals={}"
+        },
+        {
+          "attempt": 5,
+          "passed": false,
+          "tokens": 339,
+          "error": "AssertionError: assert is_bipartite(4, [(0,1),(1,2),(2,3),(3,0)]) is True | actual=False, expected=True | locals={}"
+        }
+      ],
+      "final_code": "from collections import deque\n\ndef is_bipartite(n: int, edges: list[tuple[int, int]]) -> bool:\n    adj = [[] for _ in range(n)]\n    for u, v in edges:\n        if not (0 <= u < n and 0 <= v < n):\n            return False\n        adj[u].append(v)\n        adj[v].append(u)\n\n    color = [-1] * n\n    visited = [False] * n\n\n    for start_node in range(n):\n        if not adj[start_node]:\n            continue\n        q = deque([start_node])\n        color[start_node] = 0\n        visited[start_node] = True\n        while q:\n            node = q.popleft()\n            current_color = color[node]\n            next_color = 1 - current_color\n            for neighbor in adj[node]:\n                if not visited[neighbor]:\n                    visited[neighbor] = True\n                    color[neighbor] = next_color\n                    q.append(neighbor)\n                elif color[neighbor] == current_color:\n                    return False\n\n    return True",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpxo2l74l5.py\", line 44, in <module>\n    assert __lhs is __rhs, ('assert is_bipartite(4, [(0,1),(1,2),(2,3),(3,0)]) is True' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert is_bipartite(4, [(0,1),(1,2),(2,3),(3,0)]) is True | actual=False, expected=True | locals={}"
+    },
+    {
+      "id": "py_25_ring_buffer",
+      "passed": true,
+      "attempts": 3,
+      "time_s": 474.6,
+      "tokens": 609,
+      "tps": 1.5,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 178,
+          "error": "AssertionError: assert rb0.read_all() == [] | actual=[1], expected=[] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 158,
+          "error": "AssertionError: assert rb0.read_all() == [] | actual=[1], expected=[] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": true,
+          "tokens": 273,
+          "error": ""
+        }
+      ],
+      "final_code": "from collections import deque\n\nclass RingBuffer:\n    def __init__(self, capacity: int):\n        self.capacity = max(0, capacity)\n        self.buffer = deque()\n        if self.capacity == 0:\n            self._empty_flag = True\n        else:\n            self._empty_flag = False\n\n    def write(self, val: any) -> None:\n        if not self.capacity or self._empty_flag:\n            return\n        if len(self.buffer) >= self.capacity:\n            self.buffer.popleft()\n        self.buffer.append(val)\n        self._empty_flag = False\n\n    def read_all(self) -> list:\n        if self._empty_flag:\n            return []\n        # Snapshot current contents without consuming; deque is safe here.\n        result = list(self.buffer)\n        return result",
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "mode": "smart",
+  "passed": 1,
+  "total": 1,
+  "score_pct": 100.0,
+  "results": [
+    {
+      "id": "py_10_semver_sort",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 269.9,
+      "tokens": 311,
+      "tps": 1.32,
+      "error": ""
+    }
+  ]
+}

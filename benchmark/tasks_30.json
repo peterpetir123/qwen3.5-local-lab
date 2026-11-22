@@ -1,0 +1,182 @@
+[
+  {
+    "id": "py_01_binary_search_first",
+    "category": "algorithm",
+    "prompt": "Tulis fungsi Python `first_occurrence(nums: list[int], target: int) -> int` yang mengembalikan indeks kemunculan PERTAMA `target` pada list terurut `nums` (boleh ada duplikat), atau `-1` jika tidak ditemukan. Wajib O(log n) tanpa memakai `bisect` atau `.index()`.",
+    "tests": "assert first_occurrence([1, 2, 2, 2, 3], 2) == 1\nassert first_occurrence([2, 2, 2], 2) == 0\nassert first_occurrence([1, 3, 5], 4) == -1\nassert first_occurrence([], 1) == -1\nassert first_occurrence([1, 2, 3, 4, 5], 5) == 4"
+  },
+  {
+    "id": "py_02_merge_intervals",
+    "category": "algorithm",
+    "prompt": "Tulis fungsi Python `merge_intervals(intervals: list[list[int]]) -> list[list[int]]` yang menggabungkan semua interval yang saling tumpang tindih atau bersentuhan di ujungnya (`[1,3]` dan `[3,5]` menjadi `[1,5]`). Input tidak dijamin terurut. Kembalikan hasil terurut berdasarkan nilai awal.",
+    "tests": "assert merge_intervals([[1,3],[2,6],[8,10],[15,18]]) == [[1,6],[8,10],[15,18]]\nassert merge_intervals([[3,5],[1,3]]) == [[1,5]]\nassert merge_intervals([]) == []\nassert merge_intervals([[5,7],[1,2],[2,5]]) == [[1,7]]"
+  },
+  {
+    "id": "py_03_lru_cache",
+    "category": "data_structure",
+    "prompt": "Implementasikan kelas Python `LRUCache(capacity: int)` dengan metode `get(key: int) -> int` (kembalikan `-1` jika tidak ada) dan `put(key: int, value: int) -> None`. Keduanya wajib O(1) rata-rata (boleh memakai `collections.OrderedDict`). Jika `capacity <= 0`, `put` tidak menyimpan apa pun.",
+    "tests": "c = LRUCache(2)\nc.put(1, 10)\nc.put(2, 20)\nassert c.get(1) == 10\nc.put(3, 30)\nassert c.get(2) == -1\nassert c.get(3) == 30\nc.put(3, 35)\nassert c.get(3) == 35\nc0 = LRUCache(0)\nc0.put(1, 1)\nassert c0.get(1) == -1"
+  },
+  {
+    "id": "py_04_debug_rate_limiter",
+    "category": "debugging",
+    "prompt": "Kode berikut memiliki bug pada sliding-window rate limiter. Perbaiki dan tulis ulang fungsi `allow_request(timestamps: list[float], now: float, window: float, limit: int) -> bool` yang memodifikasi `timestamps` secara in-place (membuang timestamp yang sudah kadaluarsa `t <= now - window`), lalu jika jumlah sisa `< limit`, tambahkan `now` dan kembalikan `True`; selain itu kembalikan `False`.\n\nKode bermasalah:\n```python\ndef allow_request(timestamps, now, window, limit):\n    for t in timestamps:\n        if now - t > window:\n            timestamps.remove(t)\n    if len(timestamps) <= limit:\n        timestamps.append(now)\n        return True\n    return False\n```",
+    "tests": "ts = [0.0, 0.5, 1.0]\nassert allow_request(ts, 1.5, 2.0, 3) is False\nassert ts == [0.0, 0.5, 1.0]\nassert allow_request(ts, 2.0, 2.0, 3) is True\nassert ts == [0.5, 1.0, 2.0]\nassert allow_request(ts, 5.0, 2.0, 1) is True\nassert ts == [5.0]"
+  },
+  {
+    "id": "py_05_topo_sort",
+    "category": "graph",
+    "prompt": "Tulis fungsi Python `topo_sort(n: int, edges: list[tuple[int, int]]) -> list[int]` untuk DAG dengan simpul `0..n-1` dan edge berarah `(u, v)` (u sebelum v). Jika ada beberapa urutan valid, kembalikan urutan terkecil secara leksikografis (pakai min-heap `heapq`). Jika ada siklus, kembalikan list kosong `[]`.",
+    "tests": "assert topo_sort(4, [(0,1),(0,2),(1,3),(2,3)]) == [0,1,2,3]\nassert topo_sort(3, [(2,0),(1,0)]) == [1,2,0]\nassert topo_sort(2, [(0,1),(1,0)]) == []\nassert topo_sort(3, []) == [0,1,2]"
+  },
+  {
+    "id": "py_06_json_flatten",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `flatten_dict(d: dict, sep: str = '.') -> dict` yang meratakan nested dict (dan list dengan indeks string `'0'`, `'1'`, dst.) menjadi satu level. Dict/list kosong `{}` atau `[]` dipertahankan sebagai nilainya sendiri.",
+    "tests": "assert flatten_dict({'a': {'b': 1, 'c': [10, {'d': 20}]}}) == {'a.b': 1, 'a.c.0': 10, 'a.c.1.d': 20}\nassert flatten_dict({'x': {}, 'y': []}) == {'x': {}, 'y': []}\nassert flatten_dict({}) == {}"
+  },
+  {
+    "id": "py_07_expr_eval",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `eval_rpn(tokens: list[str]) -> int` yang mengevaluasi Reverse Polish Notation dengan operator `+`, `-`, `*`, `/`. Pembagian integer `/` harus membulatkan menuju nol (truncation toward zero, seperti C/Java: `-7 / 3 == -2`). Jangan pakai `eval()`.",
+    "tests": "assert eval_rpn(['2','1','+','3','*']) == 9\nassert eval_rpn(['4','13','5','/','+']) == 6\nassert eval_rpn(['-7','3','/']) == -2\nassert eval_rpn(['7','-3','/']) == -2\nassert eval_rpn(['10','6','9','3','+','-11','*','/','*','17','+','5','+']) == 22"
+  },
+  {
+    "id": "py_08_min_coin_change",
+    "category": "dp",
+    "prompt": "Tulis fungsi Python `min_coins(coins: list[int], amount: int) -> int` yang mengembalikan jumlah koin minimum untuk membentuk `amount`, atau `-1` jika mustahil. Setiap jenis koin dapat dipakai tak terbatas. Jika `amount == 0`, kembalikan `0`.",
+    "tests": "assert min_coins([1, 3, 4], 6) == 2\nassert min_coins([2], 3) == -1\nassert min_coins([1, 2, 5], 0) == 0\nassert min_coins([1, 5, 10, 25], 63) == 6"
+  },
+  {
+    "id": "py_09_debug_mutable_default",
+    "category": "debugging",
+    "prompt": "Tulis fungsi Python `group_anagrams(words: list[str]) -> list[list[str]]` yang mengelompokkan kata anagram (case-insensitive, tapi pertahankan huruf asli tiap kata). Urutan kata di dalam tiap grup mengikuti urutan kemunculan di input; urutan grup mengikuti kemunculan pertama grup tersebut.",
+    "tests": "assert group_anagrams(['Eat', 'tea', 'Tan', 'ate', 'nat', 'Bat']) == [['Eat', 'tea', 'ate'], ['Tan', 'nat'], ['Bat']]\nassert group_anagrams([]) == []"
+  },
+  {
+    "id": "py_10_semver_sort",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `sort_semver(versions: list[str]) -> list[str]` yang mengurutkan string versi `MAJOR.MINOR.PATCH` (opsional akhiran `-prerelease`, misal `1.0.0-alpha` < `1.0.0-beta` < `1.0.0`). Versi tanpa prerelease selalu lebih tinggi dari versi prerelease dengan angka sama.",
+    "tests": "assert sort_semver(['1.10.0', '1.2.0', '1.2.0-alpha', '1.2.0-beta', '0.9.9']) == ['0.9.9', '1.2.0-alpha', '1.2.0-beta', '1.2.0', '1.10.0']\nassert sort_semver(['2.0.0', '2.0.0-rc.1']) == ['2.0.0-rc.1', '2.0.0']"
+  },
+  {
+    "id": "py_11_longest_unique_sub",
+    "category": "algorithm",
+    "prompt": "Tulis fungsi Python `longest_unique_substring(s: str) -> int` yang mengembalikan panjang substring terpanjang tanpa karakter berulang (wajib O(n) memakai sliding window).",
+    "tests": "assert longest_unique_substring('abcabcbb') == 3\nassert longest_unique_substring('bbbbb') == 1\nassert longest_unique_substring('pwwkew') == 3\nassert longest_unique_substring('') == 0\nassert longest_unique_substring('dvdf') == 3"
+  },
+  {
+    "id": "py_12_min_stack",
+    "category": "data_structure",
+    "prompt": "Implementasikan kelas Python `MinStack` dengan metode `push(val: int)`, `pop() -> None`, `top() -> int`, dan `get_min() -> int`. Semua operasi wajib O(1).",
+    "tests": "s = MinStack()\ns.push(-2)\ns.push(0)\ns.push(-3)\nassert s.get_min() == -3\ns.pop()\nassert s.top() == 0\nassert s.get_min() == -2\ns.push(-2)\ns.pop()\nassert s.get_min() == -2"
+  },
+  {
+    "id": "py_13_balanced_brackets",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `is_balanced(s: str) -> bool` yang memeriksa apakah semua tanda kurung `()`, `[]`, `{}` dalam `s` seimbang dan tertutup dalam urutan benar. Abaikan karakter selain kurung.",
+    "tests": "assert is_balanced('([a+b]*{c-d})') is True\nassert is_balanced('([)]') is False\nassert is_balanced('{[()]}') is True\nassert is_balanced('(((') is False\nassert is_balanced('') is True"
+  },
+  {
+    "id": "py_14_rle_codec",
+    "category": "parsing",
+    "prompt": "Tulis dua fungsi Python `rle_encode(s: str) -> str` dan `rle_decode(s: str) -> str` untuk Run-Length Encoding huruf (misal `'aaabbc'` -> `'3a2b1c'`, dan mendukung angka multi-digit seperti `'12a'` -> `'aaaaaaaaaaaa'`). String kosong menghasilkan `''`.",
+    "tests": "assert rle_encode('aaabbc') == '3a2b1c'\nassert rle_encode('') == ''\nassert rle_decode('3a2b1c') == 'aaabbc'\nassert rle_decode('12a1b') == 'aaaaaaaaaaaab'\nassert rle_decode('') == ''"
+  },
+  {
+    "id": "py_15_bfs_grid",
+    "category": "graph",
+    "prompt": "Tulis fungsi Python `shortest_path(grid: list[list[int]]) -> int` yang mencari jumlah langkah terpendek (4 arah: atas/bawah/kiri/kanan) dari `(0, 0)` ke `(rows-1, cols-1)` pada grid dengan `0` = jalan dan `1` = tembok. Kembalikan `-1` jika tak terjangkau atau awal/akhir adalah tembok. Untuk grid `[[0]]`, kembalikan `0`.",
+    "tests": "assert shortest_path([[0,0,0],[1,1,0],[0,0,0]]) == 4\nassert shortest_path([[0,1],[1,0]]) == -1\nassert shortest_path([[0]]) == 0\nassert shortest_path([[1,0],[0,0]]) == -1"
+  },
+  {
+    "id": "py_16_lis_length",
+    "category": "dp",
+    "prompt": "Tulis fungsi Python `lis_length(nums: list[int]) -> int` yang mengembalikan panjang Longest Strictly Increasing Subsequence dari `nums`. Jika `nums` kosong, kembalikan `0`.",
+    "tests": "assert lis_length([10,9,2,5,3,7,101,18]) == 4\nassert lis_length([0,1,0,3,2,3]) == 4\nassert lis_length([7,7,7,7]) == 1\nassert lis_length([]) == 0"
+  },
+  {
+    "id": "py_17_trie_prefix",
+    "category": "data_structure",
+    "prompt": "Implementasikan kelas Python `Trie` dengan metode `insert(word: str) -> None`, `search(word: str) -> bool` (harus kata penuh), dan `starts_with(prefix: str) -> bool`.",
+    "tests": "t = Trie()\nt.insert('apple')\nassert t.search('apple') is True\nassert t.search('app') is False\nassert t.starts_with('app') is True\nt.insert('app')\nassert t.search('app') is True\nassert t.starts_with('xyz') is False"
+  },
+  {
+    "id": "py_18_csv_parse_line",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `parse_csv_line(line: str) -> list[str]` TANPA mengimpor modul `csv`. Mendukung koma di dalam tanda kutip ganda (misal `'a,\"b,c\",d'` -> `['a', 'b,c', 'd']`) serta kutip ganda ter-escape `\"\"` di dalam kutip menjadi satu `\"`. String kosong `''` mengembalikan `[]`.",
+    "tests": "assert parse_csv_line('a,\"b,c\",d') == ['a', 'b,c', 'd']\nassert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2']\nassert parse_csv_line('1,,3') == ['1', '', '3']\nassert parse_csv_line('') == []"
+  },
+  {
+    "id": "py_19_union_find",
+    "category": "graph",
+    "prompt": "Tulis fungsi Python `count_components(n: int, edges: list[tuple[int, int]]) -> int` yang menghitung jumlah komponen terhubung pada graf tak berarah dengan simpul `0..n-1`.",
+    "tests": "assert count_components(5, [(0,1),(1,2),(3,4)]) == 2\nassert count_components(5, [(0,1),(1,2),(2,3),(3,4)]) == 1\nassert count_components(4, []) == 4\nassert count_components(0, []) == 0"
+  },
+  {
+    "id": "py_20_house_robber",
+    "category": "dp",
+    "prompt": "Tulis fungsi Python `max_non_adjacent(nums: list[int]) -> int` yang mengembalikan jumlah maksimum dari elemen-elemen non-negatif yang dipilih tanpa pernah mengambil dua elemen bersebelahan. Jika kosong, kembalikan `0`.",
+    "tests": "assert max_non_adjacent([2,7,9,3,1]) == 12\nassert max_non_adjacent([2,1,1,2]) == 4\nassert max_non_adjacent([5]) == 5\nassert max_non_adjacent([]) == 0"
+  },
+  {
+    "id": "py_21_spiral_matrix",
+    "category": "algorithm",
+    "prompt": "Tulis fungsi Python `spiral_order(matrix: list[list[int]]) -> list[int]` yang mengembalikan seluruh elemen matriks 2D dalam urutan spiral searah jarum jam (mulai dari kiri atas). Tangani matriks kosong `[]` atau persegi panjang.",
+    "tests": "assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5]\nassert spiral_order([[1,2],[3,4],[5,6]]) == [1,2,4,6,5,3]\nassert spiral_order([[1,2,3,4]]) == [1,2,3,4]\nassert spiral_order([]) == []"
+  },
+  {
+    "id": "py_22_word_break",
+    "category": "dp",
+    "prompt": "Tulis fungsi Python `can_segment(s: str, word_dict: list[str]) -> bool` yang memeriksa apakah string `s` dapat dipecah menjadi satu atau lebih kata dari `word_dict` (kata boleh dipakai berulang).",
+    "tests": "assert can_segment('leetcode', ['leet', 'code']) is True\nassert can_segment('applepenapple', ['apple', 'pen']) is True\nassert can_segment('catsandog', ['cats', 'dog', 'sand', 'and', 'cat']) is False\nassert can_segment('', ['a']) is True"
+  },
+  {
+    "id": "py_23_query_string",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `parse_query(qs: str) -> dict[str, list[str]]` TANPA `urllib.parse`. Hapus awalan `'?'` jika ada, pisahkan pasangan dengan `'&'` dan key/value dengan `'='` pertama, kumpulkan semua nilai per key dalam list sesuai urutan kemunculan (`'a=1&a=2&b='` -> `{'a': ['1', '2'], 'b': ['']}`). String kosong/`'?'` -> `{}`.",
+    "tests": "assert parse_query('?a=1&b=2&a=3') == {'a': ['1', '3'], 'b': ['2']}\nassert parse_query('k=&x=a=b') == {'k': [''], 'x': ['a=b']}\nassert parse_query('') == {}\nassert parse_query('?') == {}"
+  },
+  {
+    "id": "py_24_bipartite_check",
+    "category": "graph",
+    "prompt": "Tulis fungsi Python `is_bipartite(n: int, edges: list[tuple[int, int]]) -> bool` yang memeriksa apakah graf tak berarah dengan simpul `0..n-1` bersifat bipartite (dapat diwarnai 2 warna tanpa tetangga sewarna). Tangani graf tak terhubung.",
+    "tests": "assert is_bipartite(4, [(0,1),(1,2),(2,3),(3,0)]) is True\nassert is_bipartite(3, [(0,1),(1,2),(2,0)]) is False\nassert is_bipartite(5, [(0,1),(2,3),(3,4),(4,2)]) is False\nassert is_bipartite(3, []) is True"
+  },
+  {
+    "id": "py_25_ring_buffer",
+    "category": "data_structure",
+    "prompt": "Implementasikan kelas Python `RingBuffer(capacity: int)` dengan metode `write(val)` (jika penuh, menimpa elemen paling lama) dan `read_all() -> list` (mengembalikan semua elemen dari paling lama ke paling baru). Jika `capacity <= 0`, `write` tidak menyimpan apa pun.",
+    "tests": "rb = RingBuffer(3)\nrb.write(1)\nrb.write(2)\nassert rb.read_all() == [1, 2]\nrb.write(3)\nrb.write(4)\nassert rb.read_all() == [2, 3, 4]\nrb.write(5)\nassert rb.read_all() == [3, 4, 5]\nrb0 = RingBuffer(0)\nrb0.write(1)\nassert rb0.read_all() == []"
+  },
+  {
+    "id": "py_26_interval_intersect",
+    "category": "algorithm",
+    "prompt": "Tulis fungsi Python `intersect_intervals(a: list[list[int]], b: list[list[int]]) -> list[list[int]]` untuk dua daftar interval tertutup yang masing-masing sudah terurut dan saling lepas. Ujung yang bersentuhan seperti `[5,5]` dihitung sebagai irisan.",
+    "tests": "assert intersect_intervals([[0,2],[5,10],[13,23]], [[1,5],[8,12],[15,24]]) == [[1,2],[5,5],[8,10],[15,23]]\nassert intersect_intervals([[1,3]], [[5,9]]) == []\nassert intersect_intervals([], [[1,2]]) == []"
+  },
+  {
+    "id": "py_27_debug_pagination",
+    "category": "debugging",
+    "prompt": "Kode berikut memiliki bug pagination (indeks 1-based). Perbaiki fungsi `paginate(items: list, page: int, per_page: int) -> list` agar `page=1` mengembalikan elemen pertama sebanyak `per_page`, dan kembalikan `[]` jika `page < 1`, `per_page <= 0`, atau melebihi batas.\n\nKode bermasalah:\n```python\ndef paginate(items, page, per_page):\n    start = page * per_page\n    return items[start:start + per_page]\n```",
+    "tests": "data = [1, 2, 3, 4, 5]\nassert paginate(data, 1, 2) == [1, 2]\nassert paginate(data, 3, 2) == [5]\nassert paginate(data, 4, 2) == []\nassert paginate(data, 0, 2) == []\nassert paginate(data, 1, 0) == []"
+  },
+  {
+    "id": "py_28_debug_shallow_matrix",
+    "category": "debugging",
+    "prompt": "Kode berikut memiliki bug referensi baris bersama (shallow copy). Perbaiki `create_grid(rows: int, cols: int, fill: int = 0) -> list[list[int]]` agar tiap baris independen saat dimodifikasi. Jika `rows <= 0` atau `cols <= 0`, kembalikan `[]`.\n\nKode bermasalah:\n```python\ndef create_grid(rows, cols, fill=0):\n    return [[fill] * cols] * rows\n```",
+    "tests": "g = create_grid(2, 3, 0)\ng[0][1] = 9\nassert g == [[0, 9, 0], [0, 0, 0]]\nassert create_grid(0, 3) == []\nassert create_grid(2, 0) == []"
+  },
+  {
+    "id": "py_29_ini_parser",
+    "category": "parsing",
+    "prompt": "Tulis fungsi Python `parse_ini(text: str) -> dict[str, dict[str, str]]` TANPA `configparser`. Parse header `[section]` dan pasangan `key = value` (split pada `=` pertama), abaikan baris kosong dan komentar yang diawali `#` atau `;`, serta `strip()` spasi di sekitar nama section, key, dan value.",
+    "tests": "cfg = '''\n# comment\n[db]\nhost = localhost\nurl = sqlite://a=b\n; note\n[app]\nname = Qwen Studio\n'''\nassert parse_ini(cfg) == {'db': {'host': 'localhost', 'url': 'sqlite://a=b'}, 'app': {'name': 'Qwen Studio'}}\nassert parse_ini('') == {}"
+  },
+  {
+    "id": "py_30_kth_largest",
+    "category": "algorithm",
+    "prompt": "Tulis fungsi Python `kth_largest(nums: list[int], k: int) -> int` yang mengembalikan elemen terbesar ke-`k` (1-indexed, duplikat tetap dihitung).",
+    "tests": "assert kth_largest([3, 2, 1, 5, 6, 4], 2) == 5\nassert kth_largest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4) == 4\nassert kth_largest([-1, -5, 0], 1) == 0"
+  }
+]

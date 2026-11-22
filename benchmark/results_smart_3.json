@@ -1,0 +1,35 @@
+{
+  "mode": "smart",
+  "passed": 3,
+  "total": 3,
+  "score_pct": 100.0,
+  "results": [
+    {
+      "id": "py_01_binary_search_first",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 160.0,
+      "tokens": 199,
+      "tps": 1.37,
+      "error": ""
+    },
+    {
+      "id": "py_02_merge_intervals",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 202.2,
+      "tokens": 232,
+      "tps": 1.21,
+      "error": ""
+    },
+    {
+      "id": "py_03_lru_cache",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 109.4,
+      "tokens": 158,
+      "tps": 1.58,
+      "error": ""
+    }
+  ]
+}

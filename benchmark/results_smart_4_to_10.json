@@ -1,0 +1,71 @@
+{
+  "mode": "smart",
+  "passed": 4,
+  "total": 7,
+  "score_pct": 57.14285714285714,
+  "results": [
+    {
+      "id": "py_04_debug_rate_limiter",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 197.3,
+      "tokens": 285,
+      "tps": 1.69,
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpeutx5pko.py\", line 17, in <module>\n    assert allow_request(ts, 2.0, 2.0, 3) is True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError"
+    },
+    {
+      "id": "py_05_topo_sort",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 196.7,
+      "tokens": 296,
+      "tps": 1.58,
+      "error": ""
+    },
+    {
+      "id": "py_06_json_flatten",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 825.1,
+      "tokens": 1152,
+      "tps": 1.52,
+      "error": "File \"/tmp/tmptnb_gpe3.py\", line 1\n    Akar bug: kode sebelumnya terpotong di akhir baris (`f\"{key`), sehingga sintaks tidak valid.\n         ^^^\nSyntaxError: invalid syntax"
+    },
+    {
+      "id": "py_07_expr_eval",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 181.6,
+      "tokens": 265,
+      "tps": 1.53,
+      "error": ""
+    },
+    {
+      "id": "py_08_min_coin_change",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 97.5,
+      "tokens": 137,
+      "tps": 1.52,
+      "error": ""
+    },
+    {
+      "id": "py_09_debug_mutable_default",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 119.8,
+      "tokens": 171,
+      "tps": 1.52,
+      "error": ""
+    },
+    {
+      "id": "py_10_semver_sort",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 881.6,
+      "tokens": 1130,
+      "tps": 1.37,
+      "error": "~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/tmpkvomungg.py\", line 35, in sort_semver\n    return sorted(versions, key=cmp_to_key(compare))\n  File \"/tmp/tmpkvomungg.py\", line 13, in compare\n    a_parts = parse_version(a)\n  File \"/tmp/tmpkvomungg.py\", line 8, in parse_version\n    patch = int(parts[2])\nValueError: invalid literal for int() with base 10: '0-alpha'"
+    }
+  ]
+}

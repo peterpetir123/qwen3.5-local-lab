@@ -1,0 +1,35 @@
+{
+  "mode": "smart",
+  "passed": 2,
+  "total": 3,
+  "score_pct": 66.66666666666666,
+  "results": [
+    {
+      "id": "py_04_debug_rate_limiter",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 189.7,
+      "tokens": 199,
+      "tps": 1.23,
+      "error": ""
+    },
+    {
+      "id": "py_06_json_flatten",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 319.2,
+      "tokens": 394,
+      "tps": 1.27,
+      "error": ""
+    },
+    {
+      "id": "py_10_semver_sort",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 1041.8,
+      "tokens": 1170,
+      "tps": 1.25,
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpzf9hzu3f.py\", line 31, in <module>\n    __lhs = (sort_semver(['1.10.0', '1.2.0', '1.2.0-alpha', '1.2.0-beta', '0.9.9']))\n  File \"/tmp/tmpzf9hzu3f.py\", line 25, in sort_semver\n    sorted_versions = sorted(versions, key=parse_version)\n  File \"/tmp/tmpzf9hzu3f.py\", line 18, in parse_version\n    patch = int(parts[2])\nValueError: invalid literal for int() with base 10: '0-alpha'"
+    }
+  ]
+}

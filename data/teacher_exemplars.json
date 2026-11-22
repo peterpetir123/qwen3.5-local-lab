@@ -1,0 +1,56 @@
+[
+  {
+    "id": "ex_parsing_composite_key",
+    "source": "qwen38_27b_probe_plus_verifier_fix",
+    "categories": ["parsing"],
+    "keywords": ["sort", "version", "semver", "prerelease", "patch", "release", "delimiter", "split"],
+    "problem": "Sort build IDs `<PREFIX>-<MAJOR>.<MINOR>[~<tag>]` where optional `~tag` ranks strictly BEFORE the bare release.",
+    "reasoning": "Split optional suffix delimiter (`~`) BEFORE splitting `.` and casting `int()`; use tuple key `(prefix, major, minor, 0 if tag else 1, tag)` so bare release (`1`) sorts after any tag (`0`).",
+    "code": "def sort_build_ids(ids: list[str]) -> list[str]:\n    def key(s: str):\n        base, sep, tag = s.partition('~')\n        prefix, num = base.split('-', 1)\n        major, minor = map(int, num.split('.'))\n        return (prefix, major, minor, 0 if sep else 1, tag)\n    return sorted(ids, key=key)"
+  },
+  {
+    "id": "ex_boundary_inplace_debug",
+    "source": "curated_verified_invariant",
+    "categories": ["debugging"],
+    "keywords": ["in-place", "window", "limit", "remove", "kadaluarsa", "expired", "mutate", "timestamps"],
+    "problem": "Prune expired `(key, ts)` entries (`ts <= now - ttl`) in-place and cap list length to `max_keep`.",
+    "reasoning": "Never remove from a list while iterating; replace contents in-place with slice assignment `items[:] = [...]`, keeping strict `ts > now - ttl` (exact inverse of `ts <= now - ttl`).",
+    "code": "def prune_stale(entries: list[tuple[str, float]], now: float, ttl: float, max_keep: int) -> int:\n    cutoff = now - ttl\n    kept = [item for item in entries if item[1] > cutoff]\n    entries[:] = kept[-max_keep:] if max_keep > 0 else []\n    return len(entries)"
+  },
+  {
+    "id": "ex_nested_structure_algo",
+    "source": "curated_verified_invariant",
+    "categories": ["parsing", "algorithm", "data_structure"],
+    "keywords": ["nested", "flatten", "recursive", "rekursif", "meratakan", "tree"],
+    "problem": "Recursively normalize nested dicts/lists while preserving empty `{}` and `[]` containers.",
+    "reasoning": "Handle empty containers explicitly before recursing so `{}` and `[]` are never dropped; keep pure recursion without mutating caller inputs.",
+    "code": "def normalize_tree(node):\n    if isinstance(node, dict):\n        return {k: normalize_tree(v) for k, v in node.items()}\n    if isinstance(node, list):\n        return [normalize_tree(v) for v in node]\n    return node.strip() if isinstance(node, str) else node"
+  },
+  {
+    "id": "ex_sliding_window_for",
+    "source": "curated_verified_invariant",
+    "categories": ["algorithm"],
+    "keywords": ["sliding", "substring", "subarray", "berulang", "unique", "window", "o(n)"],
+    "problem": "Find minimum length of a contiguous subarray with sum >= target using an O(n) sliding window.",
+    "reasoning": "ALWAYS use `for right, val in enumerate(seq):` as the outer loop (guarantees termination, zero infinite-loop risk) and advance `left += 1` monotonically inside an inner `while`.",
+    "code": "def min_subarray_len(nums: list[int], target: int) -> int:\n    left = cur = 0\n    best = len(nums) + 1\n    for right, val in enumerate(nums):\n        cur += val\n        while cur >= target:\n            best = min(best, right - left + 1)\n            cur -= nums[left]\n            left += 1\n    return 0 if best > len(nums) else best"
+  },
+  {
+    "id": "ex_char_scanner_state",
+    "source": "curated_verified_invariant",
+    "categories": ["parsing"],
+    "keywords": ["encode", "decode", "rle", "csv", "kutip", "quote", "multi-digit", "run-length", "escape"],
+    "problem": "Decode compact `'tag12:a;box3:b'` strings by scanning multi-digit integers and delimiters in one pass.",
+    "reasoning": "Scan with explicit index `i = 0; while i < n:` ensuring every branch advances `i += 1`; accumulate multi-digit counts via `num = num * 10 + int(ch)` and accumulate output in a list — NEVER `return` inside the loop.",
+    "code": "def decode_counts(s: str) -> list[tuple[str, int]]:\n    out, i, n = [], 0, len(s)\n    while i < n:\n        num = 0\n        while i < n and s[i].isdigit():\n            num = num * 10 + int(s[i])\n            i += 1\n        if i < n:\n            out.append((s[i], num))\n            i += 1\n    return out"
+  },
+  {
+    "id": "ex_graph_bfs_visited",
+    "source": "curated_verified_invariant",
+    "categories": ["graph"],
+    "keywords": ["bfs", "grid", "terpendek", "shortest", "path", "bipartite", "graf", "komponen", "arah"],
+    "problem": "Find shortest hop count between two nodes in an unweighted graph using BFS.",
+    "reasoning": "Check trivial/blocked start-goal cases first; use `collections.deque` and mark nodes visited AT ENQUEUE TIME (never wait until pop) to prevent duplicate work or loops.",
+    "code": "from collections import deque\ndef shortest_hops(adj: dict[int, list[int]], start: int, goal: int) -> int:\n    if start == goal:\n        return 0\n    q = deque([(start, 0)])\n    seen = {start}\n    while q:\n        u, dist = q.popleft()\n        for v in adj.get(u, ()):\n            if v == goal:\n                return dist + 1\n            if v not in seen:\n                seen.add(v)\n                q.append((v, dist + 1))\n    return -1"
+  }
+]

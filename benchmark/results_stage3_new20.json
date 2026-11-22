@@ -1,0 +1,44 @@
+{
+  "mode": "smart",
+  "passed": 2,
+  "total": 4,
+  "score_pct": 50.0,
+  "results": [
+    {
+      "id": "py_11_longest_unique_sub",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 520.7,
+      "tokens": 872,
+      "tps": 1.86,
+      "error": "TIMEOUT (5.0s)"
+    },
+    {
+      "id": "py_12_min_stack",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 275.4,
+      "tokens": 371,
+      "tps": 1.37,
+      "error": ""
+    },
+    {
+      "id": "py_13_balanced_brackets",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 185.0,
+      "tokens": 275,
+      "tps": 1.57,
+      "error": ""
+    },
+    {
+      "id": "py_14_rle_codec",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 821.4,
+      "tokens": 1351,
+      "tps": 1.84,
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpy9o7l49s.py\", line 65, in <module>\n    assert __lhs == __rhs, (\"assert rle_decode('3a2b1c') == 'aaabbc'\" + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert rle_decode('3a2b1c') == 'aaabbc' | actual='3', expected='aaabbc' | locals={}"
+    }
+  ]
+}

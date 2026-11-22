@@ -1,0 +1,496 @@
+{
+  "mode": "smart",
+  "passed": 13,
+  "total": 20,
+  "score_pct": 65.0,
+  "results": [
+    {
+      "id": "py_11_longest_unique_sub",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 512.2,
+      "tokens": 641,
+      "tps": 1.75,
+      "exemplar": "ex_sliding_window_for",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 190,
+          "error": "AssertionError: assert longest_unique_substring('pwwkew') == 3 | actual=5, expected=3 | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 206,
+          "error": "AssertionError: assert longest_unique_substring('pwwkew') == 3 | actual=5, expected=3 | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 245,
+          "error": "AssertionError: assert longest_unique_substring('abcabcbb') == 3 | actual=8, expected=3 | locals={}"
+        }
+      ],
+      "final_code": "def longest_unique_substring(s: str) -> int:\n    if not s:\n        return 0\n\n    seen = {}\n    left = cur_len = 0\n    best = 0\n\n    for right, ch in enumerate(s):\n        # If duplicate found and it's inside current window, shrink from left\n        while ch in seen and (left < right or not ch in s[left:right+1]):\n            if left == 0:\n                break\n            left += 1\n        cur_len = right - left + 1\n\n        # Track longest unique substring ending at this position\n        best = max(best, cur_len)\n\n    return best",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp_p4wuhxn.py\", line 32, in <module>\n    assert __lhs == __rhs, (\"assert longest_unique_substring('abcabcbb') == 3\" + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert longest_unique_substring('abcabcbb') == 3 | actual=8, expected=3 | locals={}"
+    },
+    {
+      "id": "py_14_rle_codec",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 287.7,
+      "tokens": 468,
+      "tps": 1.77,
+      "exemplar": "ex_char_scanner_state",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 468,
+          "error": ""
+        }
+      ],
+      "final_code": "def rle_encode(s: str) -> str:\n    if not s:\n        return \"\"\n    \n    out, i = [], 0\n    n = len(s)\n    while i < n:\n        # Count consecutive identical chars starting at i\n        ch = s[i]\n        count = 1\n        \n        j = i + 1\n        while j < n and s[j] == ch:\n            count += 1\n            j += 1\n        \n        out.append(f\"{count}{ch}\")\n        \n        # Advance to next group start\n        i = j\n    \n    return \"\".join(out)\n\n\ndef rle_decode(s: str) -> str:\n    if not s:\n        return \"\"\n\n    chars, i = [], 0\n    n = len(s)\n    \n    while i < n:\n        # Parse multi-digit count\n        num_str = \"\"\n        \n        while i < n and s[i].isdigit():\n            num_str += s[i]\n            i += 1\n        \n        if not num_str:\n            continue\n            \n        count = int(num_str)\n        \n        # Next char is the character to repeat (if any)\n        if i >= n or not s[i].isalpha() and not s[i].isdigit():\n            # Non-alphanumeric separator? Treat as literal only once, no repetition.\n            chars.append(s[i])\n            i += 1\n            continue\n        \n        ch = s[i]\n        \n        # Append character repeated count times (if valid)\n        if ch.isalpha() or ch.isdigit():\n            for _ in range(count):\n                chars.append(ch)\n        \n        i += 1\n    \n    return \"\".join(chars)",
+      "error": ""
+    },
+    {
+      "id": "py_12_min_stack",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 159.7,
+      "tokens": 315,
+      "tps": 2.04,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 315,
+          "error": ""
+        }
+      ],
+      "final_code": "class MinStack:\n    def __init__(self):\n        self.stack = []  # each element is (val, current_min)\n\n    def push(self, val: int) -> None:\n        if not self.stack:\n            self.stack.append((val, val))\n        else:\n            min_so_far = min(val, self.stack[-1][1])\n            self.stack.append((val, min_so_far))\n\n    def pop(self) -> None:\n        if not self.stack:\n            raise IndexError(\"pop from empty stack\")\n        self.stack.pop()\n\n    def top(self) -> int:\n        if not self.stack:\n            raise ValueError(\"top on empty stack\")\n        return self.stack[-1][0]\n\n    def get_min(self) -> int:\n        if not self.stack:\n            raise IndexError(\"get_min from empty stack\")\n        return self.stack[-1][1]",
+      "error": ""
+    },
+    {
+      "id": "py_13_balanced_brackets",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 106.2,
+      "tokens": 190,
+      "tps": 1.88,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 190,
+          "error": ""
+        }
+      ],
+      "final_code": "def is_balanced(s: str) -> bool:\n    \"\"\"Check if parentheses, brackets, and braces are balanced in s.\"\"\"\n    stack = []\n    pairs = {')': '(', ']': '[', '}': '{'}\n    \n    for char in s:\n        if char in \"([{\":\n            stack.append(char)\n        elif char in \")]}\":\n            if not stack or stack[-1] != pairs[char]:\n                return False\n            stack.pop()\n    \n    return bool(not stack)",
+      "error": ""
+    },
+    {
+      "id": "py_15_bfs_grid",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 762.3,
+      "tokens": 1184,
+      "tps": 1.69,
+      "exemplar": "ex_graph_bfs_visited",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 414,
+          "error": "AssertionError: assert shortest_path([[0,0,0],[1,1,0],[0,0,0]]) == 4 | actual=0, expected=4 | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 343,
+          "error": "AssertionError: assert shortest_path([[0,0,0],[1,1,0],[0,0,0]]) == 4 | actual=-1, expected=4 | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 427,
+          "error": "AssertionError: assert shortest_path([[0,0,0],[1,1,0],[0,0,0]]) == 4 | actual=0, expected=4 | locals={}"
+        }
+      ],
+      "final_code": "from collections import deque\n\ndef shortest_path(grid: list[list[int]]) -> int:\n    rows, cols = len(grid), len(grid[0])\n    start_x, start_y = 0, 0\n    goal_x, goal_y = rows - 1, cols - 1\n    \n    # Validate dimensions and immediate wall checks\n    if not grid or not any(isinstance(row, list) for row in grid):\n        return -1\n\n    # If already at goal position (e.g., 1x1 grid with 0)\n    if start_x == goal_x and start_y == goal_y:\n        return 0\n    \n    # Check if start or goal are walls\n    if grid[start_y][start_x] == 1 or grid[goal_y][goal_x] == 1:\n        return -1\n\n    q = deque([(start_x, start_y)])\n    seen = {(start_x, start_y)}\n\n    directions = [(-1,0), (1,0), (0,-1), (0,1)]\n\n    while q:\n        x, y = q.popleft()\n        if x == goal_x and y == goal_y:\n            return 0\n        \n        for dx, dy in directions:\n            nx, ny = x + dx, y + dy\n            if 0 <= nx < rows and 0 <= ny < cols:\n                if grid[ny][nx] != 1 and (nx, ny) not in seen:\n                    seen.add((nx, ny))\n                    q.append((nx, ny))\n\n    return -1",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp7l95t0md.py\", line 49, in <module>\n    assert __lhs == __rhs, ('assert shortest_path([[0,0,0],[1,1,0],[0,0,0]]) == 4' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert shortest_path([[0,0,0],[1,1,0],[0,0,0]]) == 4 | actual=0, expected=4 | locals={}"
+    },
+    {
+      "id": "py_16_lis_length",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 346.3,
+      "tokens": 477,
+      "tps": 1.63,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 169,
+          "error": "AssertionError: assert lis_length([10,9,2,5,3,7,101,18]) == 4 | actual=7, expected=4 | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 133,
+          "error": "AssertionError: assert lis_length([10,9,2,5,3,7,101,18]) == 4 | actual=7, expected=4 | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 175,
+          "error": "AssertionError: assert lis_length([10,9,2,5,3,7,101,18]) == 4 | actual=11, expected=4 | locals={}"
+        }
+      ],
+      "final_code": "def lis_length(nums: list[int]) -> int:\n    if not nums:\n        return 0\n\n    n = len(nums)\n    dp = [1] * n  # each position starts as a subsequence of length 1 (itself)\n\n    for i in range(2, n):\n        for j in range(i - 1, -1, -1):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j]) + 1\n\n    return max(dp)",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpvkohlzgs.py\", line 25, in <module>\n    assert __lhs == __rhs, ('assert lis_length([10,9,2,5,3,7,101,18]) == 4' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert lis_length([10,9,2,5,3,7,101,18]) == 4 | actual=11, expected=4 | locals={}"
+    },
+    {
+      "id": "py_17_trie_prefix",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 191.3,
+      "tokens": 302,
+      "tps": 1.63,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 302,
+          "error": ""
+        }
+      ],
+      "final_code": "class Trie:\n    def __init__(self):\n        self.root = {}\n        self._end_of_word = object()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for char in word:\n            if char not in node:\n                node[char] = {}\n            node = node[char]\n        node[self._end_of_word] = True\n\n    def search(self, word: str) -> bool:\n        if not word:\n            return False  # empty string is not a valid stored word per problem intent\n        node = self.root\n        for char in word:\n            if char not in node:\n                return False\n            node = node[char]\n        return self._end_of_word in node\n\n    def starts_with(self, prefix: str) -> bool:\n        node = self.root\n        for char in prefix:\n            if char not in node:\n                return False\n            node = node[char]\n        return True  # any word starting with this prefix is valid",
+      "error": ""
+    },
+    {
+      "id": "py_18_csv_parse_line",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 636.2,
+      "tokens": 834,
+      "tps": 1.5,
+      "exemplar": "ex_char_scanner_state",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 271,
+          "error": "AssertionError: assert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2'] | actual=['he said \"hi\"\",2'], expected=['he said \"hi\"', '2'] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 251,
+          "error": "AssertionError: assert parse_csv_line('\"he said \"\"hi\"\"\",2') == ['he said \"hi\"', '2'] | actual=['he said \"hi\"\",2'], expected=['he said \"hi\"', '2'] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 312,
+          "error": "AssertionError: assert parse_csv_line('a,\"b,c\",d') == ['a', 'b,c', 'd'] | actual=['a', '\"b', 'c\"', 'd'], expected=['a', 'b,c', 'd'] | locals={}"
+        }
+      ],
+      "final_code": "def parse_csv_line(line: str) -> list[str]:\n    fields = []\n    in_quote = False\n    current_field = \"\"\n\n    i = 0\n    while i < len(line):\n        ch = line[i]\n        if in_quote:\n            if ch == '\"':\n                # Toggle quoting state; escaped quote consumes next char too\n                if i + 1 < len(line) and line[i + 1] == '\"':\n                    current_field += '\"'\n                    i += 2\n                else:\n                    in_quote = False\n            else:\n                current_field += ch\n        elif ch == ',':\n            fields.append(current_field.strip())\n            current_field = \"\"\n        else:\n            # Outside quotes, comma is a delimiter; treat as field if empty (e.g., \"a,b\")\n            if not in_quote and ch != '\"':\n                pass  # We'll handle non-quoted commas by stripping later\n            current_field += ch\n\n        i += 1\n\n    fields.append(current_field.strip())\n    return fields",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpjpoqsc98.py\", line 43, in <module>\n    assert __lhs == __rhs, ('assert parse_csv_line(\\'a,\"b,c\",d\\') == [\\'a\\', \\'b,c\\', \\'d\\']' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert parse_csv_line('a,\"b,c\",d') == ['a', 'b,c', 'd'] | actual=['a', '\"b', 'c\"', 'd'], expected=['a', 'b,c', 'd'] | locals={}"
+    },
+    {
+      "id": "py_19_union_find",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 257.1,
+      "tokens": 371,
+      "tps": 1.48,
+      "exemplar": "ex_graph_bfs_visited",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 371,
+          "error": ""
+        }
+      ],
+      "final_code": "from typing import List, Tuple\n\n\ndef count_components(n: int, edges: List[Tuple[int, int]]) -> int:\n    \"\"\"Return number of connected components in an undirected graph.\"\"\"\n    if n == 0:\n        return 0\n\n    # Union-Find with path compression (no rank for simplicity)\n    parent = list(range(n))\n\n    def find(x: int) -> int:\n        root = x\n        while parent[root] != root:\n            root = parent[root]\n        # Path compression\n        while True:\n            nxt = parent[x]\n            if nxt == x:\n                break\n            parent[x], x = nxt, parent[nxt]\n        return root\n\n    def union(x: int, y: int) -> None:\n        rx, ry = find(x), find(y)\n        if rx != ry:\n            parent[ry] = rx\n\n    for u, v in edges:\n        union(u, v)\n\n    # Count distinct roots (components)\n    components = {find(i) for i in range(n)}\n    return len(components)",
+      "error": ""
+    },
+    {
+      "id": "py_20_house_robber",
+      "passed": true,
+      "attempts": 3,
+      "time_s": 650.3,
+      "tokens": 618,
+      "tps": 0.84,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 185,
+          "error": "AssertionError: assert max_non_adjacent([2,7,9,3,1]) == 12 | actual=22, expected=12 | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 201,
+          "error": "AssertionError: assert max_non_adjacent([2,7,9,3,1]) == 12 | actual=22, expected=12 | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": true,
+          "tokens": 232,
+          "error": ""
+        }
+      ],
+      "final_code": "def max_non_adjacent(nums: list[int]) -> int:\n    if len(nums) == 0:\n        return 0\n    \n    n = len(nums)\n    dp1 = 0      # max sum ending with taking current element\n    dp2 = 0      # max sum ending with skipping current element\n\n    for i in range(n):\n        take = dp1 + nums[i] if nums[i] >= 0 else -float('inf')\n        skip = dp2\n        new_dp1 = max(take, skip)\n        new_dp2 = max(dp2, dp1)\n        dp1, dp2 = new_dp2, new_dp1\n\n    return max(dp1, dp2)",
+      "error": ""
+    },
+    {
+      "id": "py_21_spiral_matrix",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 1598.9,
+      "tokens": 1129,
+      "tps": 0.94,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 396,
+          "error": "AssertionError: assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5] | actual=[2, 3, 6, 8, 4], expected=[1, 2, 3, 6, 9, 8, 7, 4, 5] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 372,
+          "error": "AssertionError: assert spiral_order([[1,2,3],[4,5,6],[7,8,9]]) == [1,2,3,6,9,8,7,4,5] | actual=[1, 2, 3, 6, 9, 8, 7], expected=[1, 2, 3, 6, 9, 8, 7, 4, 5] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 361,
+          "error": "IndexError: list index out of range"
+        }
+      ],
+      "final_code": "from typing import List\n\ndef spiral_order(matrix: list[list[int]]) -> list[int]:\n    if not matrix or not matrix[0]:\n        return []\n\n    result = []\n    rows, cols = len(matrix), len(matrix[0])\n    \n    top, bottom, left, right = 0, rows - 1, 0, cols - 1\n    \n    while True:\n        # Traverse Right (top row)\n        if left <= right:\n            for c in range(left, right + 1):\n                result.append(matrix[top][c])\n            top += 1\n        \n        # Traverse Down (right column)\n        if top < bottom:\n            for r in range(top, bottom + 1):\n                result.append(matrix[r][right])\n            right -= 1\n        \n        # Traverse Left (bottom row)\n        if left <= right:\n            for c in range(right, left - 1, -1):\n                result.append(matrix[bottom][c])\n            bottom -= 1\n        \n        # Traverse Up (left column)\n        if top < bottom and left <= right:\n            for r in range(bottom, top, -1):\n                result.append(matrix[r][left])\n            left += 1\n    \n    return result",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp8sskt3ws.py\", line 47, in <module>\n    __lhs = (spiral_order([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))\n  File \"/tmp/tmp8sskt3ws.py\", line 16, in spiral_order\n    result.append(matrix[top][c])\n                  ~~~~~~^^^^^\nIndexError: list index out of range\nOffending code lines:\n  L15                 for c in range(left, right + 1):\n  L16 >>>                 result.append(matrix[top][c])\n  L17                 top += 1"
+    },
+    {
+      "id": "py_22_word_break",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 301.6,
+      "tokens": 278,
+      "tps": 0.95,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 278,
+          "error": ""
+        }
+      ],
+      "final_code": "def can_segment(s: str, word_dict: list[str]) -> bool:\n    \"\"\"Check if string s can be segmented into one or more dictionary words.\"\"\"\n    # Edge case: empty string is trivially valid\n    if not s:\n        return True\n\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n\n    for i in range(1, n + 1):\n        # Try all possible last words ending at position i-1\n        for word in word_dict:\n            if not word:\n                continue\n            w_len = len(word)\n            # Check boundary conditions and order\n            if i < w_len or s[i - w_len:i] != word:\n                continue\n\n            dp[i] = dp[i - w_len] or dp[i]  # True if previous segment valid\n\n    return bool(dp[n])",
+      "error": ""
+    },
+    {
+      "id": "py_23_query_string",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 237.6,
+      "tokens": 212,
+      "tps": 0.95,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 212,
+          "error": ""
+        }
+      ],
+      "final_code": "def parse_query(qs: str) -> dict[str, list[str]]:\n    if qs.startswith(\"?\"):\n        qs = qs[1:]\n\n    result = {}\n    for segment in qs.split(\"&\"):\n        if \"=\" in segment:\n            key, value = segment.split(\"=\", 1)\n        else:\n            key, value = segment, \"\"\n        if not key:\n            continue\n        result.setdefault(key, []).append(value)\n\n    return result",
+      "error": ""
+    },
+    {
+      "id": "py_24_bipartite_check",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 1083.0,
+      "tokens": 901,
+      "tps": 0.95,
+      "exemplar": "ex_graph_bfs_visited",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 314,
+          "error": "AssertionError: assert is_bipartite(3, [(0,1),(1,2),(2,0)]) is False | actual=True, expected=False | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 275,
+          "error": "AssertionError: assert is_bipartite(3, [(0,1),(1,2),(2,0)]) is False | actual=True, expected=False | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 312,
+          "error": "raise TimeoutError('Infinite loop (>4s): loop pointer/condition never terminates')"
+        }
+      ],
+      "final_code": "from collections import deque\n\ndef is_bipartite(n: int, edges: list[tuple[int, int]]) -> bool:\n    if n == 0 or not edges:\n        return True\n    \n    adj = [[] for _ in range(n)]\n    for u, v in edges:\n        adj[u].append(v)\n        adj[v].append(u)\n\n    colors = [-1] * n  # -1 uncolored, 0 and 1 are the two colors\n\n    def bfs(start_node):\n        q = deque([start_node])\n        while q:\n            u = q.popleft()\n            for v in adj[u]:\n                if colors[v] == -1:\n                    colors[v] = -(colors[u] % 2)\n                    q.append(v)\n                elif colors[v] != -(colors[u] % 2):\n                    return False\n    \n    for i in range(n):\n        if colors[i] == -1:\n            if not bfs(i):\n                return False\n\n    return True",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpc2jbp_0d.py\", line 40, in <module>\n    __lhs = (is_bipartite(4, [(0, 1), (1, 2), (2, 3), (3, 0)]))\n  File \"/tmp/tmpc2jbp_0d.py\", line 27, in is_bipartite\n    if not bfs(i):\n           ~~~^^^\n  File \"/tmp/tmpc2jbp_0d.py\", line 21, in bfs\n    q.append(v)\n    ~~~~~~~~^^^\n  File \"/tmp/tmpc2jbp_0d.py\", line 35, in __on_alarm\n    raise TimeoutError('Infinite loop (>4s): loop pointer/condition never terminates')\nTimeoutError: Infinite loop (>4s): loop pointer/condition never terminates\nOffending code lines:\n  L20                         colors[v] = -(colors[u] % 2)\n  L21 >>>                     q.append(v)\n  L22                     elif colors[v] != -(colors[u] % 2):\n  L26             if colors[i] == -1:\n  L27 >>>             if not bfs(i):\n  L28                     return False"
+    },
+    {
+      "id": "py_25_ring_buffer",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 906.2,
+      "tokens": 1433,
+      "tps": 2.07,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 486,
+          "error": "AssertionError: assert rb.read_all() == [2, 3, 4] | actual=[4], expected=[2, 3, 4] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 450,
+          "error": "AssertionError: assert rb.read_all() == [2, 3, 4] | actual=[4], expected=[2, 3, 4] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 497,
+          "error": "AssertionError: assert rb.read_all() == [1, 2] | actual=[], expected=[1, 2] | locals={}"
+        }
+      ],
+      "final_code": "class RingBuffer:\n    def __init__(self, capacity: int):\n        self.capacity = max(0, capacity)\n        if self.capacity == 0:\n            return\n        # Preallocate fixed-size list and pointers\n        self.buffer = [None] * self.capacity\n        self.head_idx = 0      # Points to the oldest (oldest-first read position)\n        self.tail_idx = 0       # Points to next write slot\n        self.size = 0           # Current number of valid elements\n\n    def write(self, val):\n        if self.capacity <= 0:\n            return\n        # Write at tail_idx; when full, oldest element (head_idx) is overwritten\n        self.buffer[self.tail_idx] = val\n        self.tail_idx = (self.tail_idx + 1) % self.capacity\n\n        # If ring was full before write, head moves forward after overwrite\n        if self.size == self.capacity:\n            self.head_idx = (self.head_idx + 1) % self.capacity\n            self.size -= 1\n\n    def read_all(self) -> list:\n        if self.capacity <= 0 or self.size == 0:\n            return []\n        # Read from head_idx until we hit tail_idx (exclusive), wrapping around\n        result = []\n        for _ in range(self.size):\n            item = self.buffer[self.head_idx]\n            result.append(item)\n            self.head_idx = (self.head_idx + 1) % self.capacity\n        return result\n\n    def __repr__(self):\n        return f\"RingBuffer(capacity={self.capacity}, size={self.size})\"",
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmp16z3lxj9.py\", line 51, in <module>\n    assert __lhs == __rhs, ('assert rb.read_all() == [1, 2]' + f' | actual={__lhs!r}, expected={__rhs!r} | locals={__dbg_state(locals())!r}')\n           ^^^^^^^^^^^^^^\nAssertionError: assert rb.read_all() == [1, 2] | actual=[], expected=[1, 2] | locals={}"
+    },
+    {
+      "id": "py_26_interval_intersect",
+      "passed": true,
+      "attempts": 3,
+      "time_s": 1231.6,
+      "tokens": 1137,
+      "tps": 0.89,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 365,
+          "error": "AssertionError: assert intersect_intervals([[0,2],[5,10],[13,23]], [[1,5],[8,12],[15,24]]) == [[1,2],[5,5],[8,10],[15,23]] | actual=[[1, 2], [8, 10], [15, 23]], expected=[[1, 2], [5, 5], [8, 10], [15, 23]] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 315,
+          "error": "AssertionError: assert intersect_intervals([[0,2],[5,10],[13,23]], [[1,5],[8,12],[15,24]]) == [[1,2],[5,5],[8,10],[15,23]] | actual=[[1, 2], [8, 10], [15, 23]], expected=[[1, 2], [5, 5], [8, 10], [15, 23]] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": true,
+          "tokens": 457,
+          "error": ""
+        }
+      ],
+      "final_code": "from typing import List, Tuple\n\ndef intersect_intervals(a: list[list[int]], b: list[list[int]]) -> list[list[int]]:\n    # Normalize and filter invalid intervals (empty input or start > end)\n    def clean(intervals):\n        return [i for i in intervals if len(i) == 2 and i[0] <= i[1]]\n\n    a = clean(a)\n    b = clean(b)\n\n    result: List[List[int]] = []\n    idx_a, idx_b = 0, 0\n    while idx_a < len(a) and idx_b < len(b):\n        interval_a = a[idx_a]\n        interval_b = b[idx_b]\n\n        # Check for overlap using <= to include touching boundaries like [5,5]\n        if interval_a[1] >= interval_b[0] and interval_a[0] <= interval_b[1]:\n            start = max(interval_a[0], interval_b[0])\n            end = min(interval_a[1], interval_b[1])\n            result.append([start, end])\n\n        # Move pointer that ends earlier (or equal) to progress through intervals\n        if interval_a[1] < interval_b[1]:\n            idx_a += 1\n        elif interval_b[1] < interval_a[1]:\n            idx_b += 1\n        else:\n            # Same end value; move both forward safely\n            idx_a += 1\n            idx_b += 1\n\n    return result",
+      "error": ""
+    },
+    {
+      "id": "py_27_debug_pagination",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 195.7,
+      "tokens": 153,
+      "tps": 0.87,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 153,
+          "error": ""
+        }
+      ],
+      "final_code": "def paginate(items: list, page: int, per_page: int) -> list:\n    if not (page >= 1 and per_page > 0):\n        return []\n    start = (page - 1) * per_page\n    end = start + per_page\n    # Slicing beyond bounds is safe; no extra clipping needed.\n    return items[start:end]",
+      "error": ""
+    },
+    {
+      "id": "py_28_debug_shallow_matrix",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 170.9,
+      "tokens": 139,
+      "tps": 0.9,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 139,
+          "error": ""
+        }
+      ],
+      "final_code": "def create_grid(rows: int, cols: int, fill: int = 0) -> list[list[int]]:\n    if rows <= 0 or cols <= 0:\n        return []\n    grid = [[fill] * cols for _ in range(rows)]\n    return grid",
+      "error": ""
+    },
+    {
+      "id": "py_29_ini_parser",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 314.0,
+      "tokens": 491,
+      "tps": 1.59,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 491,
+          "error": ""
+        }
+      ],
+      "final_code": "def parse_ini(text: str) -> dict[str, dict[str, str]]:\n    \"\"\"\n    Parse INI-style text into a nested dictionary without using configparser.\n    \n    - Supports sections enclosed in square brackets: [section]\n    - Parses key = value pairs within each section\n    - Ignores lines that are empty or start with # ; (comment markers)\n    - Strips whitespace around keys, values, and section names\n    \n    Returns a dict[str, dict[str, str]] keyed by section name.\n    \"\"\"\n\n    result: dict[str, dict[str, str]] = {}\n    current_section: str | None = None\n\n    for line in text.splitlines():\n        stripped_line = line.strip()\n        if not stripped_line or (stripped_line.startswith('#') or stripped_line.startswith(';')):\n            continue  # skip empty lines and comments\n\n        if stripped_line.startswith('[') and stripped_line.endswith(']'):\n            section_name = stripped_line[1:-1].strip()\n            current_section = section_name\n            if current_section not in result:\n                result[current_section] = {}\n            continue\n\n        if current_section is None:\n            # If a line appears before any [section], treat it as part of the first unnamed section.\n            pass  # intentionally ignored per typical INI behavior; we only track named sections.\n\n        if '=' in stripped_line and current_section is not None:\n            key, value = stripped_line.split('=', 1)\n            key = key.strip()\n            value = value.strip()\n            result.setdefault(current_section, {})[key] = value\n\n    return result",
+      "error": ""
+    },
+    {
+      "id": "py_30_kth_largest",
+      "passed": true,
+      "attempts": 1,
+      "time_s": 115.8,
+      "tokens": 160,
+      "tps": 1.47,
+      "exemplar": null,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "tokens": 160,
+          "error": ""
+        }
+      ],
+      "final_code": "from typing import List\n\ndef kth_largest(nums: List[int], k: int) -> int:\n    if not nums or k < 1:\n        raise ValueError(\"Invalid input\")\n    \n    # Sort descending to easily pick the k-th largest element.\n    sorted_nums = sorted(nums, reverse=True)\n    return sorted_nums[k - 1]",
+      "error": ""
+    }
+  ]
+}
