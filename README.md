@@ -29,6 +29,15 @@ All raw JSON logs are stored in [`benchmark/`](benchmark/):
 | Shrunk 9B + Extra Engine v2 (20 unseen tasks) | **65.0%** (`13/20`) | `0.90–2.04 t/s` | **`3.49 GiB`** |
 | **Shrunk 9B + Extra Engine v3 (Full 30 tasks)** | **90.0% (`27/30` combined)** *(10/10 initial + 17/20 unseen)* | **`1.25–2.35 t/s`** | **`3.49 GiB`** |
 
+### Head-to-Head vs `Qwen3.8-27B` (`IQ2_M`, Same Laptop: Intel i5 · 7.6 GiB RAM · 0 GPU)
+
+| Metric | `Qwen3.8-27B` (`IQ2_M`) | `Qwen3.5-9B Shrunk + Extra Engine v3` | Ratio / Delta |
+|---|---|---|---|
+| **File Size** | `10.87 GiB` *(exceeds RAM, SSD `mmap`)* | **`3.49 GiB`** *(fits in RAM, ~3.7 GiB free)* | **3.1× smaller** |
+| **Generation Speed (CPU)** | `0.081 t/s` *(160 tok = 34.2 min)* | **`1.25–2.35 t/s`** | **16×–29× faster** |
+| **Direct Multi-Delimiter Probe (`try=1`)** | ❌ Failed (`sort_build_ids`, inverted `~tag` priority) | ✅ Passed (`py_10_semver_sort`, 269.9s) | Verifier + invariant wins |
+| **Coding Accuracy** | *Repo GPU claim: ~73.5–88.2% (not run 30× on laptop due to ~20h swap runtime)* | **90.0% (`27/30` verified)** *(17/20 unseen)* | Practical local parity+ |
+
 ---
 
 ## Quick Start
