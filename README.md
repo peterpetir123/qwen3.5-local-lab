@@ -1,8 +1,8 @@
 # Qwen3.5-9B Local Lab — Selective GGUF Surgery & CPU-Only Reasoning Engine
 
-**100% Local · 0 GPU · \$0 Cloud** — Engineered and benchmarked on a standard laptop (**Intel Core i5-1135G7 4C, 7.6 GiB RAM**).
+**100% Local · Uncensored · 0 GPU · \$0 Cloud** — Engineered and benchmarked on a standard laptop (**Intel Core i5-1135G7 4C, 7.6 GiB RAM**).
 
-- **Download Shrunk Model (`3.49 GiB` GGUF)**: [huggingface.co/PeterPetir/Qwen3.5-9B-Shrunk-OutQ6K-GGUF](https://huggingface.co/PeterPetir/Qwen3.5-9B-Shrunk-OutQ6K-GGUF)
+- **Download Shrunk Model (`3.49 GiB` Uncensored GGUF)**: [huggingface.co/PeterPetir/Qwen3.5-9B-Shrunk-OutQ6K-GGUF](https://huggingface.co/PeterPetir/Qwen3.5-9B-Shrunk-OutQ6K-GGUF)
 - **Portfolio**: [peterpetir123.github.io](https://peterpetir123.github.io)
 
 ---
