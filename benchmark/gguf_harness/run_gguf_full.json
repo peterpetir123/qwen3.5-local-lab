@@ -1,0 +1,39 @@
+{
+  "mode": "smart",
+  "passed": 0,
+  "total": 1,
+  "score_pct": 0.0,
+  "results": [
+    {
+      "id": "gguf_01_repack_offsets",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 416.0,
+      "tokens": 898,
+      "tps": 2.47,
+      "exemplar": "ex_binary_word_bitpack",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 309,
+          "error": "AssertionError: assert repack_tensor_offsets([('a', 33), ('b', 16), ('c', 64)], 32) == {'a': 0, 'b': 64, 'c': 96} | actual={'a': 0, 'b': 96, 'c': 128}, expected={'a': 0, 'b': 64, 'c': 96} | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 274,
+          "error": "AssertionError: assert repack_tensor_offsets([('a', 33), ('b', 16), ('c', 64)], 32) == {'a': 0, 'b': 64, 'c': 96} | actual={'a': 0, 'b': 64, 'c': 64}, expected={'a': 0, 'b': 64, 'c': 96} | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 315,
+          "error": "AssertionError: assert repack_tensor_offsets([('a', 33), ('b', 16), ('c', 64)], 32) == {'a': 0, 'b': 64, 'c': 96} | actual={('a', 33): 128, ('b', 16): 128, ('c', 64): 128}, expected={'a': 0, 'b': 64, 'c': 96} | locals={}"
+        }
+      ],
+      "final_code": "def repack_tensor_offsets(sizes: list[tuple[str, int]], alignment: int = 32) -> dict[str, int]:\n    if alignment <= 0:\n        raise ValueError(\"alignment must be positive\")\n    offsets = {name: 0 for name in sizes}  # pre-allocate slots; start at 0\n\n    current_offset = 0\n    for name, byte_size in sizes:\n        if byte_size < 0:\n            raise ValueError(f\"negative byte size for tensor '{name}'\")\n        if name in offsets and offsets[name] != 0:\n            # duplicate detection via pre-allocated dict; second occurrence overwrites previous mapping.\n            pass\n\n        import math\n        next_offset = (current_offset + alignment - 1) // alignment * alignment\n        current_offset += byte_size\n        next_start = (current_offset + alignment - 1) // alignment * alignment\n\n    return {name: next_start for name in offsets}",
+      "error": "Traceback (most recent call last):\n  File \"<string>\", line 95, in run_task\n    exec(test_obj, ns)\n    ~~~~^^^^^^^^^^^^^^\n  File \"<tests>\", line 5, in <module>\nAssertionError: assert repack_tensor_offsets([('a', 33), ('b', 16), ('c', 64)], 32) == {'a': 0, 'b': 64, 'c': 96} | actual={('a', 33): 128, ('b', 16): 128, ('c', 64): 128}, expected={'a': 0, 'b': 64, 'c': 96} | locals={}"
+    }
+  ]
+}

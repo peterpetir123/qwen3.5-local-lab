@@ -1,0 +1,20 @@
+[
+  {
+    "id": "gguf_01_repack_offsets",
+    "category": "binary",
+    "prompt": "Tulis fungsi Python `repack_tensor_offsets(sizes: list[tuple[str, int]], alignment: int = 32) -> dict[str, int]` yang menghitung offset awal tiap tensor secara berurutan dimulai dari `0`, dengan pembulatan ke atas ke kelipatan `alignment` (`(x + alignment - 1) // alignment * alignment`) sebelum tensor berikutnya. Validasi ketat: lempar `ValueError` jika `alignment <= 0`, ada `byte_size < 0`, atau ada nama tensor duplikat.",
+    "tests": "assert repack_tensor_offsets([('a', 33), ('b', 16), ('c', 64)], 32) == {'a': 0, 'b': 64, 'c': 96}\nassert repack_tensor_offsets([('x', 32), ('y', 0), ('z', 1)], 32) == {'x': 0, 'y': 32, 'z': 32}\nassert repack_tensor_offsets([], 32) == {}\nfor bad_args in [([('a', 10)], 0), ([('a', 10)], -4), ([('a', -1)], 32), ([('a', 8), ('a', 8)], 32)]:\n    raised = False\n    try:\n        repack_tensor_offsets(*bad_args)\n    except ValueError:\n        raised = True\n    assert raised is True"
+  },
+  {
+    "id": "gguf_02_parse_kv_stream",
+    "category": "binary",
+    "prompt": "Tulis fungsi Python `parse_gguf_kv_lengths(blob: bytes, count: int) -> list[tuple[str, int]]` (pakai stdlib `struct`, little-endian) untuk mem-parse tepat `count` entri KV GGUF berurutan dari `blob`. Tiap entri memiliki format: `<Q` panjang key + UTF-8 key + `<I` `vtype` + payload nilai:\n- `vtype == 4` (UINT32) atau `vtype == 6` (FLOAT32): payload 4 byte.\n- `vtype == 8` (STRING): `<Q` panjang `n` + `n` byte isi (total payload = `8 + n` byte).\n- `vtype == 9` (ARRAY): `<IQ` `(elem_type, elem_count)` + `elem_count` elemen bertipe `elem_type` (dukung `4`, `6`, `8`; total payload = `12 +` total byte semua elemen).\nKembalikan list `[(key_str, value_payload_bytes), ...]`. Lempar `ValueError` jika `count < 0`, `vtype`/`elem_type` tidak dikenal, atau `blob` terpotong sebelum selesai.",
+    "tests": "import struct\ndef _s(t):\n    b = t.encode('utf-8')\n    return struct.pack('<Q', len(b)) + b\nblob = (\n    _s('align') + struct.pack('<II', 4, 32)\n    + _s('arch') + struct.pack('<I', 8) + _s('qwen35')\n    + _s('tags') + struct.pack('<IIQ', 9, 8, 2) + _s('ab') + _s('cde')\n)\nassert parse_gguf_kv_lengths(blob, 3) == [('align', 4), ('arch', 14), ('tags', 33)]\nassert parse_gguf_kv_lengths(b'', 0) == []\nfor bad_blob, bad_cnt in [(blob[:10], 1), (_s('x') + struct.pack('<I', 99), 1), (b'', -1)]:\n    raised = False\n    try:\n        parse_gguf_kv_lengths(bad_blob, bad_cnt)\n    except ValueError:\n        raised = True\n    assert raised is True"
+  },
+  {
+    "id": "gguf_03_bf16_to_f32",
+    "category": "binary",
+    "prompt": "Tulis fungsi Python `bf16_bytes_to_f32_list(raw: bytes) -> list[float]` murni menggunakan stdlib `struct` (tanpa numpy) yang mengonversi byte bfloat16 little-endian menjadi list `float` IEEE-754 float32 (tiap 2-byte `uint16` digeser kiri 16 bit `u16 << 16` lalu di-unpack sebagai float32). Jika `raw` kosong kembalikan `[]`. Lempar `ValueError` jika `len(raw)` ganjil (bukan kelipatan 2).",
+    "tests": "assert bf16_bytes_to_f32_list(b'') == []\nassert bf16_bytes_to_f32_list(b'\\x80\\x3f\\x20\\xc0\\x00\\x00\\x60\\x40') == [1.0, -2.5, 0.0, 3.5]\nraised = False\ntry:\n    bf16_bytes_to_f32_list(b'\\x80\\x3f\\x00')\nexcept ValueError:\n    raised = True\nassert raised is True"
+  }
+]

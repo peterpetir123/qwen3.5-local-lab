@@ -1,0 +1,11 @@
+{
+  "name": "harness-builder",
+  "displayName": "Harness Builder",
+  "version": "0.2.0",
+  "description": "Interactive agent skill to inspect a codebase, interview on OS, custom Hermes-style CLI name, slash commands (/), bot agent mode, and evaluation tests, then build, verify, and iteratively refine a Rust + Python AST LLM harness.",
+  "suggestedPrompts": [
+    "Baca project saya dan buatkan harness agent CLI ala Hermes lengkap dengan nama command & slash command (/)",
+    "Tambahkan fitur Bot Agent Telegram dan custom slash command (/eval, /fix, /status) ke harness saya",
+    "Review dan perbaiki dataset tasks.json serta assert harness saya agar menangkap lebih banyak edge case"
+  ]
+}

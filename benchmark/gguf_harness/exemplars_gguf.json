@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ex_binary_cursor_tlv",
+    "categories": ["binary"],
+    "keywords": ["struct", "little-endian", "blob", "vtype", "bytes", "terpotong", "kv", "parse"],
+    "problem": "Parse `n` length-prefixed TLV packets from `buf: bytes` with explicit bounds checking before every `struct.unpack_from`.",
+    "reasoning": "Keep a single cursor `pos = 0` and a helper `need(k)` that checks `pos + k > len(buf)` and raises `ValueError('truncated')` BEFORE calling `struct.unpack_from`; validate unknown type tags explicitly with `ValueError`.",
+    "code": "import struct\ndef parse_tlv_sizes(buf: bytes, n: int) -> list[tuple[int, int]]:\n    if n < 0:\n        raise ValueError('negative count')\n    pos, out = 0, []\n    def take(k: int) -> int:\n        nonlocal pos\n        if pos + k > len(buf):\n            raise ValueError('truncated buffer')\n        start = pos\n        pos += k\n        return start\n    for _ in range(n):\n        tag, length = struct.unpack_from('<HI', buf, take(6))\n        if tag not in (1, 2):\n            raise ValueError(f'unknown tag {tag}')\n        take(length)\n        out.append((tag, length))\n    return out"
+  },
+  {
+    "id": "ex_binary_word_bitpack",
+    "categories": ["binary"],
+    "keywords": ["struct", "little-endian", "uint16", "float32", "ganjil", "kelipatan", "byte", "unpack"],
+    "problem": "Validate fixed-width 4-byte records and unpack little-endian signed/unsigned words safely using `struct`.",
+    "reasoning": "Always check `len(raw) % width != 0` FIRST and raise `ValueError`; pack/unpack with explicit little-endian prefix `<` (`<H`, `<I`, `<f`) so host endianness never breaks bit layout.",
+    "code": "import struct\ndef unpack_q16_pairs(raw: bytes) -> list[tuple[int, int]]:\n    if len(raw) % 4 != 0:\n        raise ValueError('byte length must be a multiple of 4')\n    return [struct.unpack_from('<hh', raw, i) for i in range(0, len(raw), 4)]"
+  }
+]

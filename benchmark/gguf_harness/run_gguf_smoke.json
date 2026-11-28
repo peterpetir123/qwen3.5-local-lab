@@ -1,0 +1,39 @@
+{
+  "mode": "smart",
+  "passed": 0,
+  "total": 1,
+  "score_pct": 0.0,
+  "results": [
+    {
+      "id": "gguf_03_bf16_to_f32",
+      "passed": false,
+      "attempts": 3,
+      "time_s": 287.2,
+      "tokens": 473,
+      "tps": 2.13,
+      "exemplar": "ex_binary_word_bitpack",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "tokens": 150,
+          "error": "AssertionError: assert bf16_bytes_to_f32_list(b'\\x80\\x3f\\x20\\xc0\\x00\\x00\\x60\\x40') == [1.0, -2.5, 0.0, 3.5] | actual=[1065353216, 3223322624, 0, 1080033280], expected=[1.0, -2.5, 0.0, 3.5] | locals={}"
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "tokens": 178,
+          "error": "AssertionError: assert bf16_bytes_to_f32_list(b'\\x80\\x3f\\x20\\xc0\\x00\\x00\\x60\\x40') == [1.0, -2.5, 0.0, 3.5] | actual=[1065353216, 3223322624, 0, 1080033280], expected=[1.0, -2.5, 0.0, 3.5] | locals={}"
+        },
+        {
+          "attempt": 3,
+          "passed": false,
+          "tokens": 145,
+          "error": "AssertionError: assert bf16_bytes_to_f32_list(b'\\x80\\x3f\\x20\\xc0\\x00\\x00\\x60\\x40') == [1.0, -2.5, 0.0, 3.5] | actual=[1065353216, 3223322624, 0, 1080033280], expected=[1.0, -2.5, 0.0, 3.5] | locals={}"
+        }
+      ],
+      "final_code": "import struct\n\ndef bf16_bytes_to_f32_list(raw: bytes) -> list[float]:\n    if len(raw) % 2 != 0:\n        raise ValueError('byte length must be even')\n    return [struct.unpack('<H', raw[i:i+2])[0] << 16 for i in range(0, len(raw), 2)]",
+      "error": "Traceback (most recent call last):\n  File \"<string>\", line 95, in run_task\n    exec(test_obj, ns)\n    ~~~~^^^^^^^^^^^^^^\n  File \"<tests>\", line 8, in <module>\nAssertionError: assert bf16_bytes_to_f32_list(b'\\x80\\x3f\\x20\\xc0\\x00\\x00\\x60\\x40') == [1.0, -2.5, 0.0, 3.5] | actual=[1065353216, 3223322624, 0, 1080033280], expected=[1.0, -2.5, 0.0, 3.5] | locals={}"
+    }
+  ]
+}

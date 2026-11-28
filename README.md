@@ -14,6 +14,11 @@
 2. **Extra Engine v3 — Inference-Time Reasoning & Self-Repair (`0% → 90.0%` on 30 Python Tasks)**
    - [`benchmark/eval_harness.py`](benchmark/eval_harness.py): AST `assert` introspection (`actual vs expected + locals`), `signal.alarm` infinite-loop detection with exact offending line numbers.
    - [`benchmark/smart_solver.py`](benchmark/smart_solver.py): disables runaway `<think>` loops (`enable_thinking: false`), routes verified non-leaky engineering invariants ([`data/teacher_exemplars.json`](data/teacher_exemplars.json)), and performs adaptive retries + *Fresh-Design Reset* to eliminate anchoring bias.
+3. **Hybrid Rust Orchestrator + Embedded Python AST Sandbox ([`harness-rs/`](harness-rs/))**
+   - Compiles to a single **2.0 MB** stripped binary (`qwen-harness`, **~3.3 MB RSS** host footprint) with HTTP/HTTPS OpenAI-compatible client, incremental `--resume` reporting, and an unbypassable **Rust OS watchdog (`SIGKILL`)** wrapping an embedded `python3 -I -u` AST worker (zero temp files).
+4. **Interactive Agent Plugin & Skill ([`plugin/`](plugin/) — `harness-builder`)**
+   - Drop-in Antigravity/agent plugin bundle ([`plugin.json`](plugin/plugin.json) + [`SKILL.md`](plugin/skills/harness-builder/SKILL.md)) that guides an agent through 4 phases: inspecting a user's files, interviewing on harness requirements, generating & verifying custom `tasks.json` + `exemplars.json`, and running an iterative review loop until every part matches.
+   - Includes a verified custom binary-domain example in [`benchmark/gguf_harness/`](benchmark/gguf_harness/).
 
 ---
 
@@ -52,11 +57,32 @@ llama-server \
   -c 4096 -np 1 -t 4 --jinja --no-reasoning-preserve
 ```
 
-### 2. Validate & Run the 30-Task Benchmark
+### 2. Build & Run the Hybrid Rust Harness (`qwen-harness`, Recommended)
 ```bash
-python3 benchmark/eval_harness.py --tasks benchmark/tasks_30.json --self-check
-python3 benchmark/smart_solver.py --tasks benchmark/tasks_30.json --mode smart --max-iters 5 --resume --out benchmark/my_run.json
+cd harness-rs && cargo build --release && cd ..
+
+# Validate tasks & AST instrumentation
+./harness-rs/target/release/qwen-harness --tasks benchmark/tasks_30.json --self-check
+
+# Run smart self-repair mode against local llama-server (or any OpenAI-compatible API via OPENAI_API_KEY)
+./harness-rs/target/release/qwen-harness \
+  --tasks benchmark/tasks_30.json \
+  --model Qwen3.5-9B \
+  --mode smart --max-iters 5 --resume \
+  --out benchmark/my_run.json
 ```
+
+*(Legacy pure-Python runners remain available in `benchmark/eval_harness.py` and `benchmark/smart_solver.py`.)*
+
+### 3. Install the `harness-builder` Agent Plugin
+Give your coding agent the interactive 4-phase harness builder skill (inspect codebase → interview → build & `--self-check` → iterative review):
+
+```bash
+mkdir -p ~/.gemini/config/plugins
+cp -r plugin ~/.gemini/config/plugins/harness-builder
+```
+
+Restart your agent/IDE so the plugin directory is loaded, then ask the agent to inspect your project and build a custom harness. See [`benchmark/gguf_harness/`](benchmark/gguf_harness/) for a verified custom domain example.
 
 ---
 
